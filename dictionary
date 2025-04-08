@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>贾老师的英文词典</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>贾老师的英文词典</h1>
+  <input id="wordInput" placeholder="请输入英文单词">
+  <button onclick="translateWord()">翻译</button>
+
+  <h2>翻译结果：</h2>
+  <div id="result"></div>
+  <button onclick="saveWord()">收藏</button>
+
+  <h2>生词本</h2>
+  <ul id="wordList"></ul>
+  <button onclick="exportWords()">导出生词本</button>
+
+  <script src="script.js"></script>
+</body>
+</html>const wordList = [];
+
+function translateWord() {
+  const word = document.getElementById("wordInput").value;
+  if (!word) return;
+
+  // 示例翻译（这里只是假数据，后面你可以接真实 API）
+  const translated = word + " 的中文是：“你好”";
+  document.getElementById("result").innerText = translated;
+}
+
+function saveWord() {
+  const word = document.getElementById("wordInput").value;
+  if (!word) return;
+
+  const saved = JSON.parse(localStorage.getItem("words") || "[]");
+  if (!saved.includes(word)) {
+    saved.push(word);
+    localStorage.setItem("words", JSON.stringify(saved));
+    showWords();
+  }
+}
+
+function showWords() {
+  const saved = JSON.parse(localStorage.getItem("words") || "[]");
+  const list = document.getElementById("wordList");
+  list.innerHTML = "";
+  saved.forEach(w => {
+    const li = document.createElement("li");
+    li.innerText = w;
+    list.appendChild(li);
+  });
+}
+
+function exportWords() {
+  const saved = JSON.parse(localStorage.getItem("words") || "[]");
+  const blob = new Blob([saved.join("\n")], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "生词本.txt";
+  a.click();
+}
+
+showWords();body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #fefefe;
+}
+input {
+  padding: 10px;
+  width: 300px;
+}
+button {
+  padding: 10px 20px;
+  margin: 10px;
+}
+
+h1 {
+  color: #2a7ae2;
+}
